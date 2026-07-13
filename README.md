@@ -281,6 +281,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 👤 Author
 
-**Eli Bendavid**
-- GitHub: [@EliBen8](https://github.com/EliBen8)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/your-profile)
+**Pablo Jahnen Mellado**
+- GitHub: [@PabloJM21](https://github.com/PabloJM21)
+- LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/pablo-jahnen-mellado-b4a76020a)
