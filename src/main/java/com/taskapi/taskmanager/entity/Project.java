@@ -6,34 +6,23 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tasks")
-public class Task {
+@Table(name = "projects")
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
-    @Size(max = 255)
+    @NotBlank
+    @Size(max = 100)
     @Column(nullable = false)
-    private String title;
+    private String name;
 
-    @Size(max = 1000)
-    @Column(length = 1000)
+    @Size(max = 500)
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TaskStatus status = TaskStatus.TODO;
-
-    @Column(length = 50)
-    private String priority;
-
-    private LocalDate dueDate;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -43,34 +32,22 @@ public class Task {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
-
-    public Task() {}
+    public Project() {}
 
     public Long getId() { return id; }
-    public String getTitle() { return title; }
+    public String getName() { return name; }
     public String getDescription() { return description; }
-    public TaskStatus getStatus() { return status; }
-    public String getPriority() { return priority; }
-    public LocalDate getDueDate() { return dueDate; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public User getOwner() { return owner; }
-    public Project getProject() { return project; }
 
     public void setId(Long id) { this.id = id; }
-    public void setTitle(String title) { this.title = title; }
+    public void setName(String name) { this.name = name; }
     public void setDescription(String description) { this.description = description; }
-    public void setStatus(TaskStatus status) { this.status = status; }
-    public void setPriority(String priority) { this.priority = priority; }
-    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     public void setOwner(User owner) { this.owner = owner; }
-    public void setProject(Project project) { this.project = project; }
 }

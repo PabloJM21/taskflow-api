@@ -51,7 +51,7 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - Create `mapper/TaskMapper.java` as a `@Mapper(componentModel = "spring")` interface
     - Map `owner.username` → `ownerUsername` in `toTaskResponse`; ignore `id`, `owner`, `project`, `createdAt`, `updatedAt` in `toTask`
     - _Requirements: 3.7, 3.8_
-  - [ ] 3.3 Update `TaskController` to use DTOs
+  - [x] 3.3 Update `TaskController` to use DTOs
     - Inject `TaskMapper`; replace entity parameters/returns with `CreateTaskRequest`, `UpdateTaskRequest`, `TaskResponse`
     - Add `@Valid` to request body parameters
     - Update `TaskService` to accept/return DTOs or delegate mapping appropriately
@@ -66,14 +66,14 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - **Validates: Requirements 3.8**
     - In `TaskMapperTest`; generate valid `CreateTaskRequest`, invoke `toTask`, assert `title`, `description`, `status`, `priority`, `dueDate` match
 
-- [ ] 4. Implement `GlobalExceptionHandler` and custom exceptions
-  - [~] 4.1 Create custom exception classes
+- [x] 4. Implement `GlobalExceptionHandler` and custom exceptions
+  - [x] 4.1 Create custom exception classes
     - Create `exception/TaskNotFoundException.java` extending `RuntimeException`
     - Create `exception/ProjectNotFoundException.java` extending `RuntimeException`
     - Create `exception/DuplicateUserException.java` extending `RuntimeException`
     - Update `TaskService` to throw `TaskNotFoundException` instead of returning `null`
     - _Requirements: 4.2, 4.3_
-  - [~] 4.2 Implement `GlobalExceptionHandler`
+  - [x] 4.2 Implement `GlobalExceptionHandler`
     - Create `exception/GlobalExceptionHandler.java` annotated with `@RestControllerAdvice`
     - Handle `TaskNotFoundException` → HTTP 404 with `{ timestamp, status, error, message }` body
     - Handle `ProjectNotFoundException` → HTTP 404 with same shape
@@ -95,8 +95,8 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - **Validates: Requirements 4.5**
     - Create `ValidationErrorShapeTest`; generate invalid `CreateTaskRequest` variations, assert 400 response body is a JSON array with every element containing `field` and `message`
 
-- [ ] 5. Add Bean Validation to request DTOs and test boundary behaviour
-  - [~] 5.1 Verify validation annotations are in place and wired
+- [x] 5. Add Bean Validation to request DTOs and test boundary behaviour
+  - [x] 5.1 Verify validation annotations are in place and wired
     - Confirm `@Valid` is present on all `@RequestBody` parameters in `TaskController` and future `AuthController`, `ProjectController`
     - Ensure `spring-boot-starter-validation` is on the classpath (add to `pom.xml` if missing)
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
@@ -113,13 +113,13 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - **Validates: Requirements 5.2, 5.4**
     - In `TaskValidationTest`; generate `@StringLength(min=256)` strings → assert HTTP 400 with `"title"`; generate `@StringLength(min=1, max=255)` strings with valid status → assert no 400 for those fields
 
-- [ ] 6. Configure Flyway and write migration scripts
-  - [~] 6.1 Remove `ddl-auto` and configure Flyway
+- [x] 6. Configure Flyway and write migration scripts
+  - [x] 6.1 Remove `ddl-auto` and configure Flyway
     - Remove `spring.jpa.hibernate.ddl-auto=update` from `application.properties`
     - Add `spring.flyway.enabled=true` and `spring.flyway.locations=classpath:db/migration`
     - Create directory `src/main/resources/db/migration/`
     - _Requirements: 6.1_
-  - [~] 6.2 Write migrations V1–V3
+  - [x] 6.2 Write migrations V1–V3
     - Create `V1__create_tasks.sql`: `CREATE TABLE tasks (id BIGSERIAL PRIMARY KEY, title VARCHAR(255) NOT NULL, description VARCHAR(1000), status VARCHAR(50) NOT NULL DEFAULT 'TODO', created_at TIMESTAMP, updated_at TIMESTAMP)`
     - Create `V2__add_priority.sql`: `ALTER TABLE tasks ADD COLUMN priority VARCHAR(50)`
     - Create `V3__add_due_date.sql`: `ALTER TABLE tasks ADD COLUMN due_date DATE`
@@ -128,28 +128,28 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - Assert `V1__create_tasks.sql`, `V2__add_priority.sql`, `V3__add_due_date.sql` exist on the classpath under `db/migration/`
     - _Requirements: 6.2, 6.3, 6.4_
 
-- [ ] 7. Implement JWT-based authentication with Spring Security
-  - [~] 7.1 Define `User` and `Role` entities
+- [x] 7. Implement JWT-based authentication with Spring Security
+  - [x] 7.1 Define `User` and `Role` entities
     - Create `entity/User.java` with `id`, `username`, `password`, `email`, `Set<Role> roles`
     - Create `entity/Role.java` with `id`, `name`
     - Create `repository/UserRepository.java` and `repository/RoleRepository.java`
     - _Requirements: 7.2, 7.3_
-  - [~] 7.2 Implement `JwtUtil` for token signing and validation
+  - [x] 7.2 Implement `JwtUtil` for token signing and validation
     - Create `security/JwtUtil.java` using `io.jsonwebtoken` HMAC-SHA256
     - Read secret from `app.jwt.secret` property; expiry from `app.jwt.expiration` (default 3600)
     - Implement `generateToken(username)`, `validateToken(token)`, `extractUsername(token)`, `extractExpiry(token)`
     - _Requirements: 7.5, 7.6, 7.7_
-  - [~] 7.3 Implement `UserDetailsServiceImpl` and `JwtFilter`
+  - [x] 7.3 Implement `UserDetailsServiceImpl` and `JwtFilter`
     - Create `security/UserDetailsServiceImpl.java` loading user by username from `UserRepository`
     - Create `security/JwtFilter.java` extending `OncePerRequestFilter`; read `Authorization: Bearer` header, validate JWT, populate `SecurityContext`; on failure clear context (Spring Security returns 401)
     - _Requirements: 7.6, 7.7, 7.8_
-  - [~] 7.4 Configure `SecurityConfig`
+  - [x] 7.4 Configure `SecurityConfig`
     - Create `config/SecurityConfig.java`; set `SessionCreationPolicy.STATELESS`
     - Permit `/api/auth/**` without authentication; require authentication for all other paths
     - Register `JwtFilter` before `UsernamePasswordAuthenticationFilter`
     - Wire `authenticationEntryPoint` and `accessDeniedHandler` to return the same JSON error envelope
     - _Requirements: 7.1, 7.9, 7.11_
-  - [~] 7.5 Implement `AuthController` and `UserService`
+  - [x] 7.5 Implement `AuthController` and `UserService`
     - Create `service/UserService.java` with `register(RegisterRequest)` and `login(LoginRequest)` methods
     - `register`: validate uniqueness, BCrypt-hash password, assign `ROLE_USER`, save, return JWT
     - `login`: authenticate credentials, return JWT on success or throw on failure
@@ -185,21 +185,21 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - **Validates: Requirements 5.5, 5.6**
     - Create `UserValidationTest`; generate strings not matching `local-part@domain` format, submit as `email` in `RegisterRequest`, assert HTTP 400 body contains `"email"`
 
-- [~] 8. Checkpoint — Ensure all tests pass
+- [x] 8. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Implement task ownership tied to authenticated user
-  - [~] 9.1 Add `owner` relationship to `Task` and write migration V4
+- [x] 9. Implement task ownership tied to authenticated user
+  - [x] 9.1 Add `owner` relationship to `Task` and write migration V4
     - Add `@ManyToOne User owner` field to `Task.java` with `@JoinColumn(name = "user_id", nullable = false)`
     - Create `V4__add_user_id_to_tasks.sql`: create `roles`, `users`, `user_roles` tables; add `user_id` FK column to `tasks`
     - _Requirements: 8.1, 8.5_
-  - [~] 9.2 Enforce ownership in `TaskService`
+  - [x] 9.2 Enforce ownership in `TaskService`
     - On task creation, resolve the authenticated principal from `SecurityContextHolder` and set as `owner`
     - On list, filter by `owner == currentUser` (`TaskRepository` query: `findAllByOwner`)
     - On get/update/delete, load task, check `task.owner == currentUser`; throw `AccessDeniedException` (→ 403) if mismatch
     - If JWT subject does not match any `User`, return HTTP 401
     - _Requirements: 8.2, 8.3, 8.4, 8.6_
-  - [~] 9.3 Update `TaskResponse` to include `ownerUsername` and update mapper
+  - [x] 9.3 Update `TaskResponse` to include `ownerUsername` and update mapper
     - Confirm `ownerUsername` is correctly mapped from `task.owner.username` via `TaskMapper`
     - Update integration tests to assert `ownerUsername` in responses
     - _Requirements: 3.1, 3.7_
@@ -224,14 +224,14 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - **Validates: Requirements 8.4**
     - In `TaskOwnershipTest`; generate user pair and task owned by U2, attempt GET/PUT/DELETE as U1, assert HTTP 403
 
-- [ ] 10. Implement `Project` entity and project management endpoints
-  - [~] 10.1 Define `Project` entity, DTOs, and migrations V5
+- [x] 10. Implement `Project` entity and project management endpoints
+  - [x] 10.1 Define `Project` entity, DTOs, and migrations V5
     - Create `entity/Project.java` with `id`, `name`, `description`, `createdAt`, `updatedAt`, `User owner`
     - Add optional `@ManyToOne Project project` to `Task.java`
     - Create `dto/ProjectResponse.java`, `dto/CreateProjectRequest.java`
     - Create `V5__create_projects.sql`: create `projects` table; add `project_id` FK column to `tasks`
     - _Requirements: 9.1, 9.2, 9.10_
-  - [~] 10.2 Implement `ProjectRepository`, `ProjectMapper`, `ProjectService`, `ProjectController`
+  - [x] 10.2 Implement `ProjectRepository`, `ProjectMapper`, `ProjectService`, `ProjectController`
     - Create `repository/ProjectRepository.java` with `findAllByOwner` query
     - Create `mapper/ProjectMapper.java` mapping `Project` → `ProjectResponse`
     - Create `service/ProjectService.java`:
@@ -240,7 +240,7 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
       - `getProjectTasks`: verify project ownership (403 if mismatch, 404 if absent), return project's tasks
     - Create `controller/ProjectController.java` with `POST /api/projects`, `GET /api/projects`, `GET /api/projects/{id}/tasks`
     - _Requirements: 9.3, 9.4, 9.5_
-  - [~] 10.3 Enforce project ownership on task creation with `projectId`
+  - [x] 10.3 Enforce project ownership on task creation with `projectId`
     - In `TaskService.createTask`: if `projectId` is present, load `Project`, verify owned by authenticated user (403 if mismatch, 404 if absent), set `task.project`
     - If `projectId` is absent, create task without project association
     - Add `@Valid` to `CreateProjectRequest` parameter in `ProjectController`
@@ -270,7 +270,7 @@ This plan implements the nine incremental upgrade steps for `com.taskapi.taskman
     - **Validates: Requirements 9.11**
     - Create `ProjectValidationTest`; generate whitespace-only strings, submit as `name` in `CreateProjectRequest`, assert HTTP 400 body contains `"name"`
 
-- [~] 11. Final checkpoint — Ensure all tests pass
+- [x] 11. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
