@@ -1,4 +1,4 @@
-# Task Manager REST API
+# Taskflow REST API
 
 [![Java CI with Maven](https://github.com/EliBen8/taskmanager/actions/workflows/ci.yml/badge.svg)](https://github.com/EliBen8/taskmanager/actions/workflows/ci.yml)
 
